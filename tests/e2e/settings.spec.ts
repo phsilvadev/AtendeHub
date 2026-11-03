@@ -55,6 +55,9 @@ test("configurações usam dados reais e administrador cadastra membro da equipe
     path: test.info().outputPath("settings-desktop.png"),
     fullPage: true,
   });
+  await page
+    .getByRole("article", { name: "Teste gratuito" })
+    .screenshot({ path: test.info().outputPath("trial-card-desktop.png") });
   await page.getByRole("tab", { name: /Equipe/ }).click();
   await expect(
     page.getByText(account.user.email, { exact: true }),

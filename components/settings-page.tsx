@@ -331,46 +331,72 @@ export function SettingsPage() {
             </article>
           </div>
           <aside className="settings-aside">
-            <article className="card settings-plan">
-              <span className="settings-plan-label">
-                <Zap size={14} />
-                SEU PLANO ATUAL
-              </span>
-              <h2>Teste gratuito</h2>
-              <p>Um novo começo para o seu atendimento.</p>
-              <div className="settings-days">
-                <strong>{days}</strong>
-                <span>
-                  dias restantes
-                  <br />
-                  de 7 dias gratuitos
+            <article
+              className="card settings-plan"
+              aria-labelledby="trial-card-title"
+            >
+              <div className="trial-card-heading">
+                <span className="trial-card-icon">
+                  <Zap size={19} />
+                </span>
+                <span>PLANO ATUAL</span>
+                <span className="trial-card-badge">
+                  {data.trial_expired ? "Encerrado" : "Em teste"}
                 </span>
               </div>
-              <div className="settings-plan-track">
+              <h2 id="trial-card-title">Teste gratuito</h2>
+              <p>Conheça seu novo espaço de atendimento.</p>
+              <div className="trial-countdown">
+                <div>
+                  <strong>{days}</strong>
+                  <span>{days === 1 ? "dia restante" : "dias restantes"}</span>
+                </div>
+                <p>de um período de 7 dias gratuitos</p>
+              </div>
+              <div className="trial-progress-label">
+                <span>Tempo disponível</span>
+                <strong>{days} de 7 dias</strong>
+              </div>
+              <div
+                className="settings-plan-track"
+                role="progressbar"
+                aria-label="Dias restantes do teste gratuito"
+                aria-valuemin={0}
+                aria-valuemax={7}
+                aria-valuenow={Math.min(7, days)}
+              >
                 <span
                   style={{
                     width: `${Math.min(100, Math.max(0, (days / 7) * 100))}%`,
                   }}
                 />
               </div>
-              <div className="settings-plan-dates">
-                <span>
-                  <CalendarDays size={14} />
-                  Início<strong>{date(data.company.trial_started_at)}</strong>
-                </span>
-                <span>
-                  <CalendarDays size={14} />
-                  Término<strong>{date(data.company.trial_ends_at)}</strong>
-                </span>
+              <div className="trial-date-grid">
+                <div>
+                  <span>
+                    <CalendarDays size={13} />
+                    Início do teste
+                  </span>
+                  <strong>{date(data.company.trial_started_at)}</strong>
+                </div>
+                <div>
+                  <span>
+                    <CalendarDays size={13} />
+                    Fim do teste
+                  </span>
+                  <strong>{date(data.company.trial_ends_at)}</strong>
+                </div>
               </div>
-              <div className="settings-plan-note">
-                <Check size={14} />
-                Sem cobrança automática
+              <div className="trial-card-footer">
+                <span>
+                  <Check size={14} />
+                  Sem cobrança automática
+                </span>
+                <p>
+                  Ao final do teste, fale com a equipe para continuar usando a
+                  plataforma.
+                </p>
               </div>
-              <small>
-                Ao encerrar o teste, entre em contato com a equipe para
-                continuar. A contratação de planos ainda não está disponível.
-              </small>
             </article>
             <article className="card settings-access">
               <span className="settings-symbol green">

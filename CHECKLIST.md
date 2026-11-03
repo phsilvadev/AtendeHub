@@ -77,3 +77,7 @@ Validação do tour: build e checagem de tipos aprovados; 4 testes E2E aprovados
 - [x] Validar telas, permissões, criação de usuário e capturar prints desktop/mobile.
 
 Validação de configurações: 5 testes E2E aprovados com API real e SQLite temporário, build e TypeScript aprovados. Backend mantido: apenas endpoints já existentes são consumidos. Edição de empresa/perfil, 2FA e integrações continuam pendentes.
+
+## Organização do card de teste gratuito
+- [x] Reorganizar status, dias restantes, progresso e datas do trial, mantendo os dados reais da API.
+- [x] Simplificar o texto final e validar build, fluxo de configurações e captura desktop.
