@@ -306,7 +306,7 @@ function Dashboard() {
             </button>
           </div>
         </header>
-        <main>
+        <main data-section={active}>
           <div className="trial-banner">
             <span>
               Teste gratuito ·{" "}
@@ -336,7 +336,7 @@ function Dashboard() {
                 {active === "Dashboard"
                   ? "Aqui está o resumo do atendimento da AtendeHub hoje."
                   : active === "Configurações"
-                    ? "Seu workspace, do seu jeito. Tudo o que você precisa gerenciar em um só lugar."
+                    ? "Gerencie os dados da empresa e os acessos da equipe."
                     : "Gerencie sua operação comercial em um só lugar."}
               </p>
             </div>

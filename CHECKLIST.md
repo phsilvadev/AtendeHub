@@ -81,3 +81,7 @@ Validação de configurações: 5 testes E2E aprovados com API real e SQLite tem
 ## Organização do card de teste gratuito
 - [x] Reorganizar status, dias restantes, progresso e datas do trial, mantendo os dados reais da API.
 - [x] Simplificar o texto final e validar build, fluxo de configurações e captura desktop.
+
+## Revisão visual de configurações
+- [x] Remover textos promocionais, reduzir cores e decoração, reorganizar plano e integrações com aparência administrativa.
+- [x] Preservar dados reais, permissões e cadastro de usuários; build e E2E de configurações aprovados em desktop/mobile.

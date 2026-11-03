@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   CalendarDays,
   ArrowUpRight,
+  ArrowRight,
   Check,
   Copy,
   LockKeyhole,
@@ -123,59 +124,58 @@ export function SettingsPage() {
   }
   return (
     <section className="settings-page">
-      <div className="settings-intro">
-        <div>
-          <span className="settings-eyebrow">SEU ESPAÇO DE TRABALHO</span>
-          <p>
-            Organize sua empresa, acompanhe seu plano e gerencie quem tem
-            acesso.
-          </p>
+      <div className="settings-toolbar">
+        <div
+          className="settings-tabs"
+          role="tablist"
+          aria-label="Configurações"
+        >
+          {[
+            ["general", "Geral", Building2],
+            ["team", "Equipe", Users],
+            ["security", "Segurança", ShieldCheck],
+          ].map(([id, label, Icon]: any) => (
+            <button
+              key={id}
+              role="tab"
+              id={`tab-${id}`}
+              aria-controls={`panel-${id}`}
+              aria-selected={tab === id}
+              tabIndex={tab === id ? 0 : -1}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+                  e.preventDefault();
+                  const ids = ["general", "team", "security"];
+                  const next =
+                    ids[
+                      (ids.indexOf(tab) + (e.key === "ArrowRight" ? 1 : 2)) % 3
+                    ];
+                  setTab(next);
+                  document.getElementById(`tab-${next}`)?.focus();
+                }
+              }}
+              onClick={() => {
+                setTab(id);
+                setError("");
+                setNotice("");
+              }}
+            >
+              <Icon size={17} />
+              {label}
+              {id === "team" && admin && !loading && (
+                <span>{users.length}</span>
+              )}
+            </button>
+          ))}
         </div>
         <button
           className="settings-secondary"
           onClick={refresh}
           disabled={refreshing}
         >
-          <RefreshCw size={15} />
-          {refreshing ? "Atualizando…" : "Atualizar dados"}
+          <RefreshCw size={14} />
+          {refreshing ? "Atualizando…" : "Atualizar"}
         </button>
-      </div>
-      <div className="settings-tabs" role="tablist" aria-label="Configurações">
-        {[
-          ["general", "Geral", Building2],
-          ["team", "Equipe", Users],
-          ["security", "Segurança", ShieldCheck],
-        ].map(([id, label, Icon]: any) => (
-          <button
-            key={id}
-            role="tab"
-            id={`tab-${id}`}
-            aria-controls={`panel-${id}`}
-            aria-selected={tab === id}
-            tabIndex={tab === id ? 0 : -1}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-                e.preventDefault();
-                const ids = ["general", "team", "security"];
-                const next =
-                  ids[
-                    (ids.indexOf(tab) + (e.key === "ArrowRight" ? 1 : 2)) % 3
-                  ];
-                setTab(next);
-                document.getElementById(`tab-${next}`)?.focus();
-              }
-            }}
-            onClick={() => {
-              setTab(id);
-              setError("");
-              setNotice("");
-            }}
-          >
-            <Icon size={17} />
-            {label}
-            {id === "team" && admin && !loading && <span>{users.length}</span>}
-          </button>
-        ))}
       </div>
       {!modal && error && (
         <div role="alert" className="settings-feedback error">
@@ -203,19 +203,12 @@ export function SettingsPage() {
                 </span>
                 <div>
                   <h2>Dados da empresa</h2>
-                  <p>As informações que identificam seu espaço de trabalho.</p>
+                  <p>Informações de cadastro da sua empresa.</p>
                 </div>
                 <span className="settings-status">
                   <i />
                   Ativa
                 </span>
-              </div>
-              <div className="settings-company">
-                <span>{data.company.name.slice(0, 1).toUpperCase()}</span>
-                <div>
-                  <h3>{data.company.name}</h3>
-                  <p>Workspace comercial · AtendeHub</p>
-                </div>
               </div>
               <div className="settings-fields">
                 <label>
@@ -251,7 +244,7 @@ export function SettingsPage() {
               <div className="settings-note">
                 <Info size={15} />
                 <span>
-                  Dados do cadastro. A edição das informações da empresa ainda
+                  Informações somente para consulta. A edição do cadastro ainda
                   não está disponível.
                 </span>
               </div>
@@ -263,7 +256,7 @@ export function SettingsPage() {
                 </span>
                 <div>
                   <h2>Minha conta</h2>
-                  <p>Seu acesso a este espaço de trabalho.</p>
+                  <p>Dados do usuário conectado.</p>
                 </div>
                 <span className="settings-account-role">
                   {roleLabels[data.user.role]}
@@ -293,10 +286,8 @@ export function SettingsPage() {
             <article className="card settings-card">
               <div className="settings-card-title">
                 <div>
-                  <h2>Conexões do seu comercial</h2>
-                  <p>
-                    O próximo passo para reunir sua operação em um só lugar.
-                  </p>
+                  <h2>Integrações</h2>
+                  <p>Serviços externos disponíveis em etapas futuras.</p>
                 </div>
               </div>
               <div className="settings-integrations">
@@ -323,7 +314,7 @@ export function SettingsPage() {
                     <small>{description}</small>
                     <span className="settings-coming">
                       <LockKeyhole size={10} />
-                      Em preparação
+                      Não disponível
                     </span>
                   </div>
                 ))}
@@ -345,7 +336,7 @@ export function SettingsPage() {
                 </span>
               </div>
               <h2 id="trial-card-title">Teste gratuito</h2>
-              <p>Conheça seu novo espaço de atendimento.</p>
+              <p>Período de avaliação da plataforma.</p>
               <div className="trial-countdown">
                 <div>
                   <strong>{days}</strong>
@@ -398,26 +389,21 @@ export function SettingsPage() {
                 </p>
               </div>
             </article>
-            <article className="card settings-access">
-              <span className="settings-symbol green">
-                <ShieldCheck size={22} />
-              </span>
-              <h2>Acesso sob controle</h2>
+            <article className="card settings-access settings-team-summary">
+              <div className="settings-summary-title">
+                <Users size={18} />
+                <h2>Equipe</h2>
+              </div>
               <p>
-                Cada empresa possui seu próprio espaço. As permissões são
-                verificadas em cada acesso.
+                {admin
+                  ? loading
+                    ? "Carregando usuários…"
+                    : `${users.length} ${users.length === 1 ? "usuário cadastrado" : "usuários cadastrados"}`
+                  : `Seu perfil: ${roleLabels[data.user.role]}`}
               </p>
-              <div>
-                <CheckCircle2 size={14} />
-                Sessão protegida
-              </div>
-              <div>
-                <CheckCircle2 size={14} />
-                Perfis por função
-              </div>
               <button onClick={() => setTab(admin ? "team" : "security")}>
-                {admin ? "Gerenciar equipe" : "Ver minha segurança"}
-                <ArrowUpRight size={15} />
+                {admin ? "Gerenciar usuários" : "Consultar meu acesso"}
+                <ArrowRight size={15} />
               </button>
             </article>
           </aside>
@@ -583,7 +569,7 @@ export function SettingsPage() {
                   <strong>Autenticação em duas etapas</strong>
                   <p>Este recurso ainda não está disponível.</p>
                 </div>
-                <span className="settings-coming">Em preparação</span>
+                <span className="settings-coming">Não disponível</span>
               </div>
             </article>
             <article className="card settings-card">
