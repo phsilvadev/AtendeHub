@@ -114,3 +114,13 @@ No primeiro acesso ao dashboard, o tour destaca um elemento por vez e escurece o
 O botão **Tour guiado** reabre o guia, inclusive a partir de outras seções, retornando ao Dashboard. Conclusão e dispensa são lembradas neste navegador por empresa, usuário e versão do tour (`dashboard-tour:v1`), sem armazenar credenciais. Ao limpar os dados do navegador ou usar outro navegador, ele pode aparecer novamente. O tour só é montado após autenticação e validação do trial.
 
 Os testes Playwright verificam destaque, foco, navegação, persistência, reabertura, separação entre contas e posicionamento mobile. As capturas ficam na pasta ignorada `test-results/`.
+
+## Configurações conectadas à API
+
+A seção Configurações possui abas **Geral**, **Equipe** e **Segurança**. A aba Geral usa a identidade autenticada para exibir empresa, conta e datas reais do trial. Os dados cadastrais são somente leitura: o backend atual não oferece edição da empresa/perfil. O antigo formulário que alegava salvar preferências localmente foi substituído por informações reais.
+
+Administradores consultam e cadastram usuários em `/api/v1/users`, escolhendo entre os perfis já suportados pela API. O novo usuário pode fazer login imediatamente. Não há envio automático de convite por e-mail. Vendedores, supervisores e operadores recebem uma mensagem de acesso restrito na aba Equipe; a API mantém a autorização no servidor.
+
+Segurança permite encerrar a sessão atual. Alteração de senha, 2FA e gerenciamento de outras sessões ainda não estão disponíveis. WhatsApp, GestãoClick e IA aparecem somente como integrações em preparação, sem controles que simulem conexão.
+
+Validação: 5 testes E2E aprovados, incluindo cadastro real de usuário na empresa correta, login como vendedor, restrição da equipe, logout e visualização mobile sem overflow. Nenhuma alteração no backend foi necessária.

@@ -69,3 +69,11 @@ Provisionar API e banco para publicação compatível, ou implementar recuperaç
 - [x] Validar posicionamento desktop/mobile, persistência e gerar print.
 
 Validação do tour: build e checagem de tipos aprovados; 4 testes E2E aprovados (2 de auth existentes + 2 do tour), usando API real e SQLite temporário. Conclusão armazenada apenas no navegador por usuário/empresa.
+
+## Configurações alinhadas ao backend (escopo adicional)
+- [x] Substituir formulário local por dados reais de empresa, conta e trial.
+- [x] Equipe: listar e criar usuários pela API existente com restrição de perfil.
+- [x] Segurança: sessão atual e logout reais, recursos pendentes sem controles fictícios.
+- [x] Validar telas, permissões, criação de usuário e capturar prints desktop/mobile.
+
+Validação de configurações: 5 testes E2E aprovados com API real e SQLite temporário, build e TypeScript aprovados. Backend mantido: apenas endpoints já existentes são consumidos. Edição de empresa/perfil, 2FA e integrações continuam pendentes.

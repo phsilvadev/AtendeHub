@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SettingsPage } from "../components/settings-page";
 import { DashboardTour } from "../components/dashboard-tour";
 import { AuthGuard, useIdentity } from "../components/auth-guard";
 import { auth, ApiError, storageKey, roleLabels } from "../lib/auth";
@@ -203,6 +204,8 @@ function Dashboard() {
             </div>
           </div>
           <button
+            aria-label="Configurações"
+            title="Configurações"
             className={
               active === "Configurações" ? "nav-item active" : "nav-item"
             }
@@ -318,7 +321,7 @@ function Dashboard() {
             </span>
             <span>{identity.company.name}</span>
           </div>
-          <div className="page-heading">
+          <div className="page-heading" data-section={active}>
             <div>
               <div className="eyebrow">
                 <span /> VISÃO GERAL DO SEU NEGÓCIO
@@ -332,7 +335,9 @@ function Dashboard() {
               <p>
                 {active === "Dashboard"
                   ? "Aqui está o resumo do atendimento da AtendeHub hoje."
-                  : "Gerencie sua operação comercial em um só lugar."}
+                  : active === "Configurações"
+                    ? "Seu workspace, do seu jeito. Tudo o que você precisa gerenciar em um só lugar."
+                    : "Gerencie sua operação comercial em um só lugar."}
               </p>
             </div>
             <div className="heading-actions">
@@ -795,40 +800,12 @@ function Dashboard() {
             </article>
           )}
           {active === "Configurações" && (
-            <article className="card standalone">
-              <h2>Configurações do atendimento</h2>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setToast("Preferências salvas neste navegador.");
-                }}
-              >
-                <label>
-                  Nome da empresa
-                  <input
-                    defaultValue={identity.company.name}
-                    onChange={(e) =>
-                      localStorage.setItem(
-                        `atendehub:${identity.company.id}:company-label`,
-                        e.target.value,
-                      )
-                    }
-                  />
-                </label>
-                <label>
-                  E-mail de contato
-                  <input
-                    type="email"
-                    placeholder="comercial@acomoreira.com.br"
-                  />
-                </label>
-                <label className="checkbox">
-                  <input type="checkbox" defaultChecked /> Receber notificações
-                  de novos atendimentos
-                </label>
-                <button className="primary">Salvar preferências</button>
-              </form>
-            </article>
+            <SettingsPage
+              onTour={() => {
+                setActive("Dashboard");
+                setTourOpen(true);
+              }}
+            />
           )}
           <footer>
             <span>© 2026 AtendeHub. Todos os direitos reservados.</span>
