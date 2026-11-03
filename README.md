@@ -1,14 +1,37 @@
-# Aço Moreira — IA Atendimento
+# AtendeHub
 
-Dashboard em Next.js 15, React 19 e TypeScript. Componentes Galaxy/Uiverse adaptados (ver ATTRIBUTIONS.md).
+Sistema de gestão de atendimento comercial em Next.js 15, React 19 e TypeScript.
 
-## Executar
+## Executar localmente
 
-```sh
+Requer Node.js 20 ou superior.
+
+```bash
 npm install
 npm run dev
 ```
 
-Abra http://localhost:3000. Para produção estática: `npm run build` (pasta `out`).
+Abra http://localhost:3000.
 
-Indicadores e conversas são demonstrativos. Busca filtra os registros; novo atendimento persiste em localStorage; respostas são apenas demonstração; exportação CSV disponível em Atendimentos e Relatórios. WhatsApp, IA, autenticação e dados de produção não estão integrados.
+## Telas
+
+- `/`: dashboard, indicadores comerciais, conversas e produtos.
+- `/login`: formulário de acesso e recuperação de senha.
+- `/cadastro`: formulário de cadastro com confirmação de senha.
+
+## Validação e build
+
+```bash
+npm run typecheck
+npm run build
+```
+
+A exportação estática é gerada em `out/`.
+
+## Estado das integrações
+
+A interface utiliza dados demonstrativos. Novos atendimentos são salvos no navegador via localStorage. Login, cadastro, recuperação de senha, WhatsApp e IA ainda precisam de serviços reais; o login atual redireciona ao dashboard sem autenticar. A exportação CSV está disponível em Atendimentos e Relatórios.
+
+## Créditos
+
+Componentes Galaxy/Uiverse adaptados: consulte [ATTRIBUTIONS.md](ATTRIBUTIONS.md). A ilustração foi fornecida pelo responsável pelo projeto.
