@@ -1,4 +1,178 @@
-'use client';
-import {useState} from 'react';
-import {Eye,EyeOff,ArrowRight,MessageSquare,ShieldCheck,Zap,ArrowLeft} from 'lucide-react';
-export default function Login(){const[show,setShow]=useState(false);const[reset,setReset]=useState(false);const[notice,setNotice]=useState('');return <div className="login-page"><section className="login-story"><a href="/" className="login-brand"><span>A</span>AtendeHub <small>IA Atendimento</small></a><div className="login-pitch"><span className="login-tag"><Zap size={14}/> conexões que constroem</span><h1>Boas conversas.<br/>Grandes negócios.</h1><img className="login-illustration" src="/atendehub-atendimento.jpg" width="1280" height="990" alt="Atendente AtendeHub com headset, notebook e recursos de atendimento e vendas"/></div><small className="login-copyright">© 2026 AtendeHub · Feito para construir relações.</small></section><section className="login-form-side"><a href="/" className="login-back"><ArrowLeft size={15}/> Voltar ao dashboard</a><div className="login-form-wrap"><span className="login-mini">A</span><h2>{reset?'Esqueceu sua senha?':'Bem-vindo de volta!'}</h2><p>{reset?'Informe seu e-mail para recuperar o acesso.':'Entre para acompanhar sua operação comercial.'}</p><form onSubmit={e=>{e.preventDefault();if(reset){setNotice('Recuperação demonstrativa. O envio de e-mail estará disponível após integrar a autenticação.')}else{window.location.href='/'}}}><label htmlFor="email">E-mail corporativo</label><input id="email" name="email" type="email" required autoComplete="email" placeholder="voce@empresa.com.br"/>{!reset&&<><div className="password-heading"><label htmlFor="password">Senha</label><button type="button" onClick={()=>{setReset(true);setNotice('')}}>Esqueceu a senha?</button></div><div className="password-field"><input id="password" name="password" type={show?'text':'password'} required minLength={6} autoComplete="current-password" placeholder="Digite sua senha"/><button type="button" aria-label={show?'Ocultar senha':'Mostrar senha'} onClick={()=>setShow(!show)}>{show?<EyeOff size={19}/>:<Eye size={19}/>}</button></div><label className="remember"><input type="checkbox" name="remember"/> Lembrar meu acesso</label></>}<button className="login-submit" type="submit">{reset?'Solicitar recuperação':'Entrar no sistema'}<ArrowRight size={18}/></button>{reset&&<button className="return-login" type="button" onClick={()=>{setReset(false);setNotice('')}}>Voltar para o login</button>}</form>{!reset&&<p className="signup-link">Ainda não tem uma conta? <a href="/cadastro">Cadastre-se</a></p>}{notice&&<p role="status" className="login-notice">{notice}</p>}<p className="login-help">Precisa de acesso? Fale com o administrador da sua empresa.</p></div><div className="login-bottom">AtendeHub — IA Atendimento</div></section></div>}
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { auth } from "../../lib/auth";
+import {
+  Eye,
+  EyeOff,
+  ArrowRight,
+  MessageSquare,
+  ShieldCheck,
+  Zap,
+  ArrowLeft,
+} from "lucide-react";
+export default function Login() {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [show, setShow] = useState(false);
+  const [reset, setReset] = useState(false);
+  const [notice, setNotice] = useState("");
+  return (
+    <div className="login-page">
+      <section className="login-story">
+        <a href="/" className="login-brand">
+          <span>A</span>AtendeHub <small>IA Atendimento</small>
+        </a>
+        <div className="login-pitch">
+          <span className="login-tag">
+            <Zap size={14} /> conexões que constroem
+          </span>
+          <h1>
+            Boas conversas.
+            <br />
+            Grandes negócios.
+          </h1>
+          <img
+            className="login-illustration"
+            src="/atendehub-atendimento.jpg"
+            width="1280"
+            height="990"
+            alt="Atendente AtendeHub com headset, notebook e recursos de atendimento e vendas"
+          />
+        </div>
+        <small className="login-copyright">
+          © 2026 AtendeHub · Feito para construir relações.
+        </small>
+      </section>
+      <section className="login-form-side">
+        <a href="/" className="login-back">
+          <ArrowLeft size={15} /> Voltar ao dashboard
+        </a>
+        <div className="login-form-wrap">
+          <span className="login-mini">A</span>
+          <h2>{reset ? "Esqueceu sua senha?" : "Bem-vindo de volta!"}</h2>
+          <p>
+            {reset
+              ? "Informe seu e-mail para recuperar o acesso."
+              : "Entre para acompanhar sua operação comercial."}
+          </p>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (busy) return;
+              setNotice("");
+              if (reset) {
+                setNotice(
+                  "Para recuperar o acesso, entre em contato com o administrador. A recuperação por e-mail ainda não está disponível.",
+                );
+                return;
+              }
+              const f = new FormData(e.currentTarget);
+              setBusy(true);
+              try {
+                await auth.login(
+                  String(f.get("email")),
+                  String(f.get("password")),
+                  f.get("remember") === "on",
+                );
+                router.replace("/");
+                router.refresh();
+              } catch (error) {
+                setNotice(
+                  error instanceof Error
+                    ? error.message
+                    : "Não foi possível entrar.",
+                );
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            <label htmlFor="email">E-mail corporativo</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              maxLength={254}
+              required
+              autoComplete="email"
+              placeholder="voce@empresa.com.br"
+            />
+            {!reset && (
+              <>
+                <div className="password-heading">
+                  <label htmlFor="password">Senha</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReset(true);
+                      setNotice("");
+                    }}
+                  >
+                    Esqueceu a senha?
+                  </button>
+                </div>
+                <div className="password-field">
+                  <input
+                    id="password"
+                    name="password"
+                    type={show ? "text" : "password"}
+                    required
+                    maxLength={128}
+                    minLength={8}
+                    autoComplete="current-password"
+                    placeholder="Digite sua senha"
+                  />
+                  <button
+                    type="button"
+                    aria-label={show ? "Ocultar senha" : "Mostrar senha"}
+                    onClick={() => setShow(!show)}
+                  >
+                    {show ? <EyeOff size={19} /> : <Eye size={19} />}
+                  </button>
+                </div>
+                <label className="remember">
+                  <input type="checkbox" name="remember" /> Lembrar meu acesso
+                </label>
+              </>
+            )}
+            <button className="login-submit" type="submit" disabled={busy}>
+              {busy
+                ? "Entrando…"
+                : reset
+                  ? "Como recuperar o acesso"
+                  : "Entrar no sistema"}
+              <ArrowRight size={18} />
+            </button>
+            {reset && (
+              <button
+                className="return-login"
+                type="button"
+                onClick={() => {
+                  setReset(false);
+                  setNotice("");
+                }}
+              >
+                Voltar para o login
+              </button>
+            )}
+          </form>
+          {!reset && (
+            <p className="signup-link">
+              Ainda não tem uma conta? <a href="/cadastro">Cadastre-se</a>
+            </p>
+          )}
+          {notice && (
+            <p role="alert" className="login-notice">
+              {notice}
+            </p>
+          )}
+          <p className="login-help">
+            Precisa de acesso? Fale com o administrador da sua empresa.
+          </p>
+        </div>
+        <div className="login-bottom">AtendeHub — IA Atendimento</div>
+      </section>
+    </div>
+  );
+}

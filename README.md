@@ -1,37 +1,108 @@
-# AtendeHub
+# AtendeHub — IA Atendimento
 
-Sistema de gestão de atendimento comercial em Next.js 15, React 19 e TypeScript.
+Plataforma de atendimento comercial para distribuidoras, inicialmente Aço Moreira. O visual existente foi preservado. Esta entrega implementa **somente a Fase 01 essencial**: cadastro multiempresa com teste gratuito de 7 dias, autenticação, sessão, permissões e proteção do frontend.
 
-## Executar localmente
+## Tecnologias
 
-Requer Node.js 20 ou superior.
+- Frontend na raiz: Next.js 15, React 19, TypeScript, CSS e lucide-react.
+- Backend em `backend/`: Python 3.12+, FastAPI, SQLAlchemy 2, Pydantic, Alembic, Argon2.
+- SQLite em desenvolvimento e testes. Nenhum Docker é necessário ou utilizado.
+- Pytest, Vitest/Testing Library e Playwright.
+
+## Executar em desenvolvimento
+
+Requisitos: Python 3.12+, Node.js 20+ e npm. Os comandos abaixo usam shell Linux/macOS.
+
+Terminal 1, a partir da raiz:
 
 ```bash
-npm install
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+alembic upgrade head
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Terminal 2, na raiz:
+
+```bash
+npm ci
+cp .env.example .env
 npm run dev
 ```
 
-Abra http://localhost:3000.
+Abra **http://localhost:3000/cadastro**. Não há usuários ou empresas pré-cadastrados. O cadastro cria a empresa, seu administrador e a sessão. O período gratuito dura exatamente 7 dias a partir do relógio do servidor, sem cartão e sem renovar a cada login.
 
-## Telas
+SQLite é criado em `backend/data/atendehub.db`, ignorado pelo Git. Sempre execute Alembic e FastAPI dentro de `backend/`. Não use `create_all` para substituir migrations. Para criar banco em outro caminho, altere `DATABASE_URL` antes de executar os comandos.
 
-- `/`: dashboard, indicadores comerciais, conversas e produtos.
-- `/login`: formulário de acesso e recuperação de senha.
-- `/cadastro`: formulário de cadastro com confirmação de senha.
+## Configuração e segurança
 
-## Validação e build
+Frontend (`.env` da raiz):
+
+- `BACKEND_URL`: endereço privado da API (padrão `http://127.0.0.1:8000`). Lido no servidor em runtime.
+- `APP_ORIGIN`: origem pública do frontend (padrão de desenvolvimento: `http://localhost:3000`), usada no redirecionamento seguro ao login. Configure também ao iniciar o servidor de produção.
+
+Backend (`backend/.env`):
+
+- `DATABASE_URL`: SQLite de desenvolvimento.
+- `ALLOWED_ORIGINS`: array JSON de origens permitidas para mutações; inclua a origem real do frontend, sem `/` final. A API rejeita POST sem Origin/Referer válido.
+- `COOKIE_SECURE=false` somente em HTTP local; produção exige `true` e HTTPS.
+- `SESSION_HOURS=12`: validade no servidor para sessão normal (cookie de navegador).
+- `REMEMBER_DAYS=7`: cookie persistente ao selecionar “Lembrar meu acesso”. Isso não estende o trial.
+- `APP_ENV=development`. Produção recusa SQLite e configuração insegura de cookies/origens.
+
+Cookie opaco HttpOnly/SameSite=Lax; apenas o hash do token é armazenado. Não há JWT/token em localStorage. Logout revoga a sessão no banco. O middleware verifica a sessão na API antes de liberar o dashboard; o guard do cliente revalida a cada minuto e ao focar a janela. A API valida sessão, ativação, empresa e permissões em cada acesso protegido.
+
+A empresa sempre vem da sessão, não de IDs enviados pelo formulário. Administradores acessam apenas usuários de sua empresa; vendedor/supervisor/operador não administram usuários. Um e-mail pertence a uma identidade/empresa nesta fase. Não há endpoint público para elevar privilégios, alterar plano ou renovar trial. Superadmin da plataforma e gestão completa de usuários ficam para outra etapa.
+
+## Testes
+
+Backend (bancos SQLite temporários, criados por migrations):
 
 ```bash
+cd backend
+source .venv/bin/activate
+pytest -q
+alembic check
+```
+
+Frontend, na raiz:
+
+```bash
+npm test
 npm run typecheck
 npm run build
 ```
 
-A exportação estática é gerada em `out/`.
+Fluxo completo com API real + Next em modo de produção e SQLite temporário:
 
-## Estado das integrações
+```bash
+npx playwright install chromium
+npm run build
+npm run test:e2e
+```
 
-A interface utiliza dados demonstrativos. Novos atendimentos são salvos no navegador via localStorage. Login, cadastro, recuperação de senha, WhatsApp e IA ainda precisam de serviços reais; o login atual redireciona ao dashboard sem autenticar. A exportação CSV está disponível em Atendimentos e Relatórios.
+O Playwright inicia e encerra Next na porta 3100 e FastAPI na 8100. As portas precisam estar livres. A configuração usa banco temporário, sem alterar o banco de desenvolvimento. Se Chromium já estiver instalado no sistema:
 
-## Créditos
+```bash
+PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:e2e
+```
 
-Componentes Galaxy/Uiverse adaptados: consulte [ATTRIBUTIONS.md](ATTRIBUTIONS.md). A ilustração foi fornecida pelo responsável pelo projeto.
+## Produção e limites desta entrega
+
+**O frontend deixou de ser uma exportação estática:** execute `npm run build` e `npm start`, com a API FastAPI acessível pelo `BACKEND_URL`. O proxy `/api/v1/*` mantém as chamadas no mesmo domínio do navegador. A configuração `.openai/hosting.json` é a identidade histórica do Site anterior; não é um plano de implantação deste backend. O endereço estático anterior não recebe esta autenticação automaticamente.
+
+Produção requer provisionar API Python e banco persistente, validar PostgreSQL, configurar TLS, origem pública, limites no proxy, backups, monitoramento e política de retenção. Nada disso é simulado como implantado. Não execute a aplicação em produção com SQLite.
+
+Dashboard, atendimentos, relatórios e catálogo ainda possuem dados demonstrativos identificados no visual. O estado local legado de atendimentos é separado por empresa e usuário e não substitui persistência comercial. Dados antigos sem identificação de empresa não são importados. Não há WhatsApp, ERP, IA, cobrança ou plano pago conectado. Integrações e dados comerciais reais serão implementados em fases futuras.
+
+Recuperação de senha por e-mail está pendente: a interface orienta contato com administrador e não alega enviar um link. Não há credenciais de teste fixas nem sementes de produção.
+
+## Documentação
+
+- [ARCHITECTURE.md](ARCHITECTURE.md): decisões, camadas, isolamento e fluxos.
+- [CHECKLIST.md](CHECKLIST.md): escopo, tarefas validadas, bloqueios e próximos passos.
+- [API.md](API.md): contratos, exemplos e permissões.
+- [ATTRIBUTIONS.md](ATTRIBUTIONS.md): créditos Galaxy/Uiverse. Ilustração fornecida pelo responsável pelo projeto.

@@ -36,3 +36,4 @@
 .signup-page .login-form-wrap form>label{margin-bottom:5px}
 .signup-page .login-form-wrap input:not([type=checkbox]){margin-top:0;margin-bottom:18px}
 .signup-page .password-field button{top:8px}
+.auth-status{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:30px;text-align:center}.auth-status p{max-width:600px;line-height:1.7;color:#777383}.trial-banner{display:flex;justify-content:space-between;gap:14px;padding:10px 14px;border-radius:8px;background:#e8e6ff;color:#6256b4;font-size:11px;margin-bottom:22px}.logout-button{margin-top:20px;color:#b84454}.login-submit:disabled{opacity:.65;cursor:wait}

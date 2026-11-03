@@ -2,3 +2,15 @@ node_modules/
 .next/
 out/
 *.tsbuildinfo
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.db
+*.db-*
+backend/data/
+playwright-report/
+test-results/
