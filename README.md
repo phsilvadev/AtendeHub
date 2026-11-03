@@ -106,3 +106,11 @@ Recuperação de senha por e-mail está pendente: a interface orienta contato co
 - [CHECKLIST.md](CHECKLIST.md): escopo, tarefas validadas, bloqueios e próximos passos.
 - [API.md](API.md): contratos, exemplos e permissões.
 - [ATTRIBUTIONS.md](ATTRIBUTIONS.md): créditos Galaxy/Uiverse. Ilustração fornecida pelo responsável pelo projeto.
+
+## Tour guiado do Dashboard
+
+No primeiro acesso ao dashboard, o tour destaca um elemento por vez e escurece o restante da página. Possui sete etapas, Voltar, Próximo, Pular e Concluir. Escape fecha o tour; o foco fica no modal enquanto o restante da interface permanece bloqueado.
+
+O botão **Tour guiado** reabre o guia, inclusive a partir de outras seções, retornando ao Dashboard. Conclusão e dispensa são lembradas neste navegador por empresa, usuário e versão do tour (`dashboard-tour:v1`), sem armazenar credenciais. Ao limpar os dados do navegador ou usar outro navegador, ele pode aparecer novamente. O tour só é montado após autenticação e validação do trial.
+
+Os testes Playwright verificam destaque, foco, navegação, persistência, reabertura, separação entre contas e posicionamento mobile. As capturas ficam na pasta ignorada `test-results/`.

@@ -24,6 +24,10 @@ test("cadastro → trial → logout → login com API e SQLite reais", async ({
   await expect(
     page.getByText("Teste gratuito · 7 dias restantes"),
   ).toBeVisible();
+  await expect(
+    page.getByRole("dialog", { name: "Tudo começa pelo menu" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Pular tour" }).click();
   const cookie = (await context.cookies()).find(
     (c) => c.name === "atendehub_session",
   );

@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { DashboardTour } from "../components/dashboard-tour";
 import { AuthGuard, useIdentity } from "../components/auth-guard";
 import { auth, ApiError, storageKey, roleLabels } from "../lib/auth";
 import {
@@ -91,6 +92,14 @@ function Dashboard() {
   const identity = useIdentity();
   const router = useRouter();
   const key = storageKey(identity);
+  const tourKey = `atendehub:${identity.company.id}:${identity.user.id}:dashboard-tour:v1`;
+  const [tourOpen, setTourOpen] = useState(false);
+  const closeTour = useCallback(() => setTourOpen(false), []);
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem(tourKey)) setTourOpen(true);
+    } catch {}
+  }, [tourKey]);
   const [active, setActive] = useState("Dashboard");
   const [query, setQuery] = useState("");
   const [rows, setRows] = useState(initial);
@@ -145,7 +154,10 @@ function Dashboard() {
     setToast("Relatório exportado com sucesso.");
   }
   return (
-    <div className={expanded ? "shell menu-expanded" : "shell"}>
+    <div
+      data-tour-background
+      className={expanded ? "shell menu-expanded" : "shell"}
+    >
       <aside id="main-sidebar" className={mobile ? "sidebar open" : "sidebar"}>
         <a className="brand" href="#" onClick={() => go("Dashboard")}>
           <span className="brand-symbol">
@@ -165,7 +177,7 @@ function Dashboard() {
           <ChevronDown size={15} />
         </div>
         <span className="nav-label">PRINCIPAL</span>
-        <nav>
+        <nav data-tour="navigation">
           {nav.slice(0, 6).map(([name, Icon]) => (
             <button
               key={name}
@@ -272,6 +284,7 @@ function Dashboard() {
             <div className="header-divider" />
             <button
               className="profile"
+              data-tour="profile"
               onClick={() => setPanel(panel === "Perfil" ? "" : "Perfil")}
             >
               <span className="avatar pedro">
@@ -323,11 +336,27 @@ function Dashboard() {
               </p>
             </div>
             <div className="heading-actions">
+              <button
+                className="tour-launch"
+                onClick={() => {
+                  setActive("Dashboard");
+                  setPanel("");
+                  setModal(false);
+                  setSelected(null);
+                  setTourOpen(true);
+                }}
+              >
+                Tour guiado
+              </button>
               <span className="today">
                 <CalendarDays size={16} />
                 02 de novembro, 2026
               </span>
-              <button className="primary" onClick={() => setModal(true)}>
+              <button
+                data-tour="new-attendance"
+                className="primary"
+                onClick={() => setModal(true)}
+              >
                 <Plus size={18} /> Novo atendimento
               </button>
             </div>
@@ -342,7 +371,7 @@ function Dashboard() {
                   <span /> Dados demonstrativos
                 </span>
               </div>
-              <section className="metrics">
+              <section data-tour="metrics" className="metrics">
                 {[
                   ["Atendimentos", "126", "18", MessageSquare, "green"],
                   ["Orçamentos", "42", "24", FileText, "purple"],
@@ -389,7 +418,10 @@ function Dashboard() {
                   </article>
                 ))}
               </section>
-              <section className="conversation-section">
+              <section
+                data-tour="conversations"
+                className="conversation-section"
+              >
                 <div className="section-heading">
                   <h2>Atendimentos em andamento</h2>
                   <button
@@ -445,7 +477,7 @@ function Dashboard() {
                   ))}
                 </div>
               </section>
-              <section className="charts">
+              <section data-tour="charts" className="charts">
                 <article className="card status-card">
                   <div className="card-heading">
                     <div>
@@ -1043,6 +1075,13 @@ function Dashboard() {
           </section>
         </div>
       )}
+      {tourOpen && (
+        <DashboardTour
+          storageKey={tourKey}
+          open={tourOpen}
+          onClose={closeTour}
+        />
+      )}
       {toast && (
         <div className="toast" role="status">
           <Check size={18} />
@@ -1060,7 +1099,7 @@ function ProductCard({
   query?: string;
 }) {
   return (
-    <article className="card products">
+    <article data-tour="products" className="card products">
       <div className="card-heading">
         <div>
           <h2>Produtos mais consultados</h2>

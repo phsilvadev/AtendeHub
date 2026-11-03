@@ -61,3 +61,11 @@ Escopo aprovado: somente fundação/auth multiempresa, trial de 7 dias e proteç
 
 ## Próxima atividade
 Provisionar API e banco para publicação compatível, ou implementar recuperação segura de senha após definir o serviço de e-mail. Não iniciar módulos comerciais sem nova definição de escopo.
+
+## Tour guiado do Dashboard (escopo adicional autorizado)
+- [x] Criar tour com destaque isolado, fundo escuro e explicação por etapa.
+- [x] Abrir no primeiro acesso por usuário/empresa e permitir reabrir manualmente.
+- [x] Navegação Voltar/Próximo/Pular/Concluir, Escape e foco acessível.
+- [x] Validar posicionamento desktop/mobile, persistência e gerar print.
+
+Validação do tour: build e checagem de tipos aprovados; 4 testes E2E aprovados (2 de auth existentes + 2 do tour), usando API real e SQLite temporário. Conclusão armazenada apenas no navegador por usuário/empresa.
