@@ -33,3 +33,6 @@
 @media(min-width:1400px){.login-story:has(.login-illustration) .login-pitch{padding-top:65px}.login-illustration{max-height:485px;object-fit:contain}}
 @media(max-width:900px){.login-story:has(.login-illustration){padding:35px}.login-story:has(.login-illustration) h1{font-size:35px}}
 @media(max-width:650px){.login-story:has(.login-illustration){padding:24px}.login-story:has(.login-illustration) .login-pitch{padding:30px 0 0}.login-story:has(.login-illustration) h1{font-size:32px}.login-illustration{width:100%;max-width:370px;margin:5px auto 0}.login-story:has(.login-illustration) .login-tag{font-size:12px}}
+.signup-page .login-form-wrap form>label{margin-bottom:5px}
+.signup-page .login-form-wrap input:not([type=checkbox]){margin-top:0;margin-bottom:18px}
+.signup-page .password-field button{top:8px}
