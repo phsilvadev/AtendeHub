@@ -340,31 +340,33 @@ function Dashboard() {
                     : "Gerencie sua operação comercial em um só lugar."}
               </p>
             </div>
-            <div className="heading-actions">
-              <button
-                className="tour-launch"
-                onClick={() => {
-                  setActive("Dashboard");
-                  setPanel("");
-                  setModal(false);
-                  setSelected(null);
-                  setTourOpen(true);
-                }}
-              >
-                Tour guiado
-              </button>
-              <span className="today">
-                <CalendarDays size={16} />
-                02 de novembro, 2026
-              </span>
-              <button
-                data-tour="new-attendance"
-                className="primary"
-                onClick={() => setModal(true)}
-              >
-                <Plus size={18} /> Novo atendimento
-              </button>
-            </div>
+            {active !== "Configurações" && (
+              <div className="heading-actions">
+                <button
+                  className="tour-launch"
+                  onClick={() => {
+                    setActive("Dashboard");
+                    setPanel("");
+                    setModal(false);
+                    setSelected(null);
+                    setTourOpen(true);
+                  }}
+                >
+                  Tour guiado
+                </button>
+                <span className="today">
+                  <CalendarDays size={16} />
+                  02 de novembro, 2026
+                </span>
+                <button
+                  data-tour="new-attendance"
+                  className="primary"
+                  onClick={() => setModal(true)}
+                >
+                  <Plus size={18} /> Novo atendimento
+                </button>
+              </div>
+            )}
           </div>
           {active === "Dashboard" && (
             <>
@@ -799,14 +801,7 @@ function Dashboard() {
               </button>
             </article>
           )}
-          {active === "Configurações" && (
-            <SettingsPage
-              onTour={() => {
-                setActive("Dashboard");
-                setTourOpen(true);
-              }}
-            />
-          )}
+          {active === "Configurações" && <SettingsPage />}
           <footer>
             <span>© 2026 AtendeHub. Todos os direitos reservados.</span>
             <span>

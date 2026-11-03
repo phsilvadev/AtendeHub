@@ -35,7 +35,7 @@ function date(value: number) {
     timeZone: "UTC",
   }).format(new Date(value * 1000));
 }
-export function SettingsPage({ onTour }: { onTour: () => void }) {
+export function SettingsPage() {
   const initial = useIdentity();
   const router = useRouter();
   const [data, setData] = useState(initial);
@@ -394,13 +394,6 @@ export function SettingsPage({ onTour }: { onTour: () => void }) {
                 <ArrowUpRight size={15} />
               </button>
             </article>
-            <button className="settings-tour-help" onClick={onTour}>
-              <span>
-                Precisa de uma orientação?
-                <strong>Rever tour do Dashboard</strong>
-              </span>
-              <ArrowUpRight size={17} />
-            </button>
           </aside>
         </div>
       )}

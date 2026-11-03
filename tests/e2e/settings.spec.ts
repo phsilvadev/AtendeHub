@@ -30,6 +30,15 @@ test("configurações usam dados reais e administrador cadastra membro da equipe
 }) => {
   const account = await createCompany(page);
   await openSettings(page);
+  await expect(
+    page.getByRole("button", { name: "Tour guiado", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Novo atendimento", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Rever tour do Dashboard" }),
+  ).toHaveCount(0);
   await expect(page.getByLabel("Nome da empresa", { exact: true })).toHaveValue(
     account.company.name,
   );
